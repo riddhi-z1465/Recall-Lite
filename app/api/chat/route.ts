@@ -43,13 +43,30 @@ export async function POST(req: Request) {
     
     Cite sources by referring to the context.`;
 
-        const result = await streamText({
-            model: openai('gpt-4o-mini'),
-            messages: convertToCoreMessages(messages),
-            system: systemPrompt,
-        });
+        try {
+            const result = await streamText({
+                model: openai('gpt-4o-mini'),
+                messages: convertToCoreMessages(messages),
+                system: systemPrompt,
+            });
 
-        return result.toTextStreamResponse();
+            return result.toTextStreamResponse();
+        } catch (error: any) {
+            console.error('OpenAI API Error:', error);
+            // Fallback: Return a stream with a friendly error message
+            const errorMessage = "I'm sorry, I cannot answer right now because the OpenAI API quota has been exceeded. Please check your billing details. (This is a system message)";
+
+            const stream = new ReadableStream({
+                start(controller) {
+                    controller.enqueue(errorMessage);
+                    controller.close();
+                },
+            });
+
+            return new Response(stream, {
+                headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+            });
+        }
     } catch (error: any) {
         console.error('Error in chat:', error);
         return new Response(error.message, { status: 500 });
