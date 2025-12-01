@@ -28,28 +28,37 @@ export async function POST(req: Request) {
         const lastMessage = messages[messages.length - 1];
         console.log('v2: Processing chat for document:', documentId);
 
+        // Validate documentId is a valid UUID
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!documentId || !uuidRegex.test(documentId)) {
+            console.error('Invalid document ID format:', documentId);
+            return new Response(
+                JSON.stringify({
+                    error: 'Invalid document ID. Please delete this document and re-add it.'
+                }),
+                {
+                    status: 400,
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            );
+        }
+
         const embedding = await getEmbeddings(lastMessage.content);
 
         // 3. Search for Context
-        // Switching to match_document_chunks which seems to be the reliable function
-        const { data: allChunks, error } = await supabase.rpc('match_document_chunks', {
+        const { data: chunks, error } = await supabase.rpc('match_page_sections', {
             query_embedding: embedding,
             match_threshold: 0.1, // Lower threshold to ensure we get results with local embeddings
-            match_count: 50,
-            user_id: user.id,
+            match_count: 5,
+            filter_document_id: documentId,
         });
 
         if (error) {
             console.error('Error searching documents:', error);
         }
 
-        // Filter by documentId in JS and take top 5
-        const chunks = (allChunks || [])
-            .filter((chunk: any) => chunk.document_id === documentId)
-            .slice(0, 5);
-
-        const relevantChunks = chunks
-            .map((chunk: any) => chunk.content) // match_document_chunks returns 'content'
+        const relevantChunks = (chunks || [])
+            .map((chunk: any) => chunk.text)
             .join('\n\n');
 
         if (!relevantChunks) {
