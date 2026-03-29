@@ -129,50 +129,50 @@ export function SidebarDocumentItem({
 
                     {/* Title */}
                     <span className={cn(
-                        "flex-1 text-sm font-normal truncate transition-all duration-300 relative z-10",
+                        "flex-1 text-sm font-normal truncate transition-all duration-300 relative z-10 hide-on-mini min-w-0",
                         isActive && "font-medium",
                         isHovered && "font-medium"
                     )}>
                         {title}
                     </span>
 
-                    {/* Favorite star */}
+                    {/* Favorite star - hide on mini to save space */}
                     {isFavorite && (
-                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500 shrink-0 animate-in zoom-in duration-300" />
+                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500 shrink-0 animate-in zoom-in duration-300 hide-on-mini" />
                     )}
 
-                    {/* Quick actions - slide in on hover */}
+                    {/* Quick actions - simplified hover and priority */}
                     <div className={cn(
-                        "flex items-center gap-1 shrink-0 transition-all duration-300 ease-out",
-                        isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-2 pointer-events-none"
+                        "flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20 hide-on-mini",
+                        isActive && "opacity-100" // Keep visible if active so user knows actions are there
                     )}>
                         <Button
                             size="icon"
                             variant="ghost"
-                            className="h-6 w-6 hover:bg-yellow-500/20 hover:text-yellow-600 transition-all duration-200 hover:scale-110"
+                            className="h-7 w-7 hover:bg-yellow-500/20 hover:text-yellow-600 transition-all duration-200 hover:scale-110"
                             onClick={handleFavorite}
                         >
                             <Star className={cn(
-                                "w-3 h-3 transition-all duration-200",
+                                "w-3.5 h-3.5 transition-all duration-200",
                                 isFavorite && "fill-yellow-500 text-yellow-500"
                             )} />
                         </Button>
                         <Button
                             size="icon"
                             variant="ghost"
-                            className="h-6 w-6 hover:bg-blue-500/20 hover:text-blue-600 transition-all duration-200 hover:scale-110"
+                            className="h-7 w-7 hover:bg-blue-500/20 hover:text-blue-600 transition-all duration-200 hover:scale-110"
                             onClick={handleShare}
                         >
-                            <Share2 className="w-3 h-3" />
+                            <Share2 className="w-3.5 h-3.5" />
                         </Button>
                         <Button
                             size="icon"
                             variant="ghost"
-                            className="h-6 w-6 hover:bg-red-500/20 hover:text-red-600 transition-all duration-200 hover:scale-110"
+                            className="h-7 w-7 hover:bg-red-500/20 hover:text-red-600 transition-all duration-200 hover:scale-110"
                             onClick={handleDelete}
                             disabled={isDeleting}
                         >
-                            <Trash2 className="w-3 h-3" />
+                            <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                     </div>
                 </div>
@@ -203,11 +203,47 @@ export function SidebarDocumentItem({
                         <p className="text-xs text-muted-foreground line-clamp-4">
                             {excerpt}
                         </p>
-                        <div className="flex items-center justify-between pt-2 border-t">
+                        <div className="flex items-center justify-between pt-2 border-t mt-3">
                             <span className="text-xs text-muted-foreground">{formattedDate}</span>
-                            <div className="flex gap-1">
-                                <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-xs text-muted-foreground">Ready</span>
+                            <div className="flex gap-1 items-center">
+                                {/* Duplicate controls in tooltip for mini-mode access */}
+                                <div className="flex items-center gap-1 mr-2 pr-2 border-r">
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="h-7 w-7 hover:bg-yellow-500/20 hover:text-yellow-600"
+                                        onClick={handleFavorite}
+                                        style={{ pointerEvents: 'auto' }}
+                                    >
+                                        <Star className={cn(
+                                            "w-3.5 h-3.5",
+                                            isFavorite && "fill-yellow-500 text-yellow-500"
+                                        )} />
+                                    </Button>
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="h-7 w-7 hover:bg-blue-500/20 hover:text-blue-600"
+                                        onClick={handleShare}
+                                        style={{ pointerEvents: 'auto' }}
+                                    >
+                                        <Share2 className="w-3.5 h-3.5" />
+                                    </Button>
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="h-7 w-7 hover:bg-red-500/20 hover:text-red-600"
+                                        onClick={handleDelete}
+                                        disabled={isDeleting}
+                                        style={{ pointerEvents: 'auto' }}
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                    </Button>
+                                </div>
+                                <div className="flex gap-1">
+                                    <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="text-xs text-muted-foreground">Ready</span>
+                                </div>
                             </div>
                         </div>
                     </div>

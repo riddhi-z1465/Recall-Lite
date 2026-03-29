@@ -24,7 +24,7 @@ export async function AppSidebar({ currentDocumentId, className }: AppSidebarPro
         .order('created_at', { ascending: false });
 
     return (
-        <div className={cn("h-full flex flex-col bg-gradient-to-b from-muted/5 to-muted/20 hidden md:flex shrink-0", className)}>
+        <div className={cn("h-full flex flex-col bg-gradient-to-b from-muted/5 to-muted/20 hidden md:flex shrink-0 sidebar-container", className)}>
             {/* Header */}
             <div className="p-4 border-b h-14 flex items-center bg-background/50 backdrop-blur-sm">
                 <Link href="/dashboard" className="flex items-center gap-2 font-semibold group">
@@ -32,7 +32,7 @@ export async function AppSidebar({ currentDocumentId, className }: AppSidebarPro
                         <Brain className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
                         <Sparkles className="w-2 h-2 absolute -top-1 -right-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
-                    <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold text-xl tracking-tight">
+                    <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold text-xl tracking-tight hide-on-mini truncate min-w-0">
                         Recall Lite
                     </span>
                 </Link>
@@ -45,8 +45,8 @@ export async function AppSidebar({ currentDocumentId, className }: AppSidebarPro
                         className="w-full justify-start bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-0 group relative overflow-hidden"
                     >
                         <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
-                        <LayoutDashboard className="w-4 h-4 mr-2 transition-transform duration-500 group-hover:rotate-180" />
-                        <span className="font-semibold tracking-wide">Dashboard</span>
+                        <LayoutDashboard className="w-4 h-4 mr-2 transition-transform duration-500 group-hover:rotate-180 shrink-0" />
+                        <span className="font-semibold tracking-wide hide-on-mini truncate min-w-0">Dashboard</span>
                     </Button>
                 </Link>
             </div>
@@ -55,7 +55,7 @@ export async function AppSidebar({ currentDocumentId, className }: AppSidebarPro
             <ScrollArea className="flex-1 px-2">
                 <div className="space-y-1 p-2">
                     <div className="flex items-center justify-between mb-3 px-2">
-                        <h4 className="text-sm font-semibold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                        <h4 className="text-sm font-semibold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent hide-on-mini truncate min-w-0">
                             Your Knowledge
                         </h4>
                         {documents && documents.length > 0 && (
@@ -99,7 +99,7 @@ export async function AppSidebar({ currentDocumentId, className }: AppSidebarPro
                             <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                             <div className="absolute inset-0 w-2 h-2 rounded-full bg-green-500 animate-ping opacity-75" />
                         </div>
-                        <span className="truncate transition-colors duration-300 group-hover:text-foreground" title={user.email}>
+                        <span className="truncate transition-colors duration-300 group-hover:text-foreground hide-on-mini min-w-0" title={user.email}>
                             {user.email}
                         </span>
                     </div>
