@@ -1,5 +1,5 @@
-const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "lead-management-d3cab";
-const API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyA9lFm08_Fc1LLT4DblkAD7Ew08w2UwzAE";
+const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "";
+const API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "";
 const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
 function toFirestoreValue(val: any): any {
@@ -69,7 +69,7 @@ export async function addFirestoreDoc(collection: string, data: Record<string, a
     if (!res.ok) {
         const errText = await res.text();
         if (res.status === 403 || errText.includes('PERMISSION_DENIED')) {
-            throw new Error(`Firestore Permission Denied (403): Please check your Firebase Console (project lead-management-d3cab) > Firestore Database > Rules. Update rules to allow read/write (e.g. "allow read, write: if request.auth != null;" or "allow read, write: if true;").`);
+            throw new Error(`Firestore Permission Denied (403): Please check your Firebase Console (project ${PROJECT_ID}) > Firestore Database > Rules. Update rules to allow read/write (e.g. "allow read, write: if request.auth != null;" or "allow read, write: if true;").`);
         }
         throw new Error(`Firestore addDoc error (${res.status}): ${errText}`);
     }
