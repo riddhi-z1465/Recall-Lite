@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Trash2, Share2, Star, ExternalLink } from 'lucide-react';
+import { MessageSquare, Trash2, Share2, Star, ExternalLink, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
@@ -25,10 +25,19 @@ export function SidebarDocumentItem({
     isActive
 }: SidebarDocumentItemProps) {
     const router = useRouter();
-    const [isHovered, setIsHovered] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
+    const [faviconFailed, setFaviconFailed] = useState(false);
+
+    const domainHost = (() => {
+        if (!url) return null;
+        try {
+            return new URL(url).hostname.replace('www.', '');
+        } catch {
+            return null;
+        }
+    })();
 
     const handleDelete = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -85,94 +94,79 @@ export function SidebarDocumentItem({
     return (
         <div
             className="relative group"
-            onMouseEnter={() => {
-                setIsHovered(true);
-                setShowPreview(true);
-            }}
-            onMouseLeave={() => {
-                setIsHovered(false);
-                setShowPreview(false);
-            }}
+            onMouseEnter={() => setShowPreview(true)}
+            onMouseLeave={() => setShowPreview(false)}
         >
             <Link href={`/chat/${id}`}>
                 <div
                     className={cn(
-                        "relative flex items-center gap-2 px-3 py-2.5 rounded-lg transition-all duration-300 ease-out cursor-pointer overflow-hidden",
-                        "hover:bg-secondary/80 hover:shadow-sm hover:scale-[1.02]",
-                        isActive && "bg-secondary shadow-sm",
+                        "relative flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer overflow-hidden text-xs",
+                        "hover:bg-accent/80 hover:text-accent-foreground",
+                        isActive
+                            ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border-l-2 border-indigo-500 shadow-xs"
+                            : "text-muted-foreground hover:text-foreground",
                         isDeleting && "opacity-50 pointer-events-none"
                     )}
                 >
-                    {/* Animated gradient background on hover */}
-                    <div
-                        className={cn(
-                            "absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 opacity-0 transition-opacity duration-500",
-                            isHovered && "opacity-100"
+                    {/* Domain Favicon or Message Icon */}
+                    <div className="shrink-0">
+                        {domainHost && !faviconFailed ? (
+                            <img
+                                src={`https://www.google.com/s2/favicons?domain=${domainHost}&sz=32`}
+                                alt={domainHost}
+                                className="w-3.5 h-3.5 rounded"
+                                onError={() => setFaviconFailed(true)}
+                            />
+                        ) : (
+                            <MessageSquare className={cn(
+                                "w-3.5 h-3.5 transition-colors",
+                                isActive ? "text-indigo-500" : "text-muted-foreground"
+                            )} />
                         )}
-                        style={{
-                            backgroundSize: '200% 100%',
-                            animation: isHovered ? 'shimmer 2s infinite' : 'none'
-                        }}
-                    />
-
-                    {/* Icon with animation */}
-                    <div className={cn(
-                        "shrink-0 transition-all duration-300",
-                        isHovered && "scale-110 rotate-3"
-                    )}>
-                        <MessageSquare className={cn(
-                            "w-4 h-4 transition-colors duration-300",
-                            isActive ? "text-primary" : "text-muted-foreground",
-                            isHovered && "text-primary"
-                        )} />
                     </div>
 
                     {/* Title */}
-                    <span className={cn(
-                        "flex-1 text-sm font-normal truncate transition-all duration-300 relative z-10 hide-on-mini min-w-0",
-                        isActive && "font-medium",
-                        isHovered && "font-medium"
-                    )}>
+                    <span className="flex-1 truncate hide-on-mini min-w-0">
                         {title}
                     </span>
 
-                    {/* Favorite star - hide on mini to save space */}
+                    {/* Favorite star */}
                     {isFavorite && (
-                        <Star className="w-3 h-3 text-yellow-500 fill-yellow-500 shrink-0 animate-in zoom-in duration-300 hide-on-mini" />
+                        <Star className="w-3 h-3 text-amber-500 fill-amber-500 shrink-0 hide-on-mini" />
                     )}
 
-                    {/* Quick actions - simplified hover and priority */}
+                    {/* Quick actions on hover */}
                     <div className={cn(
-                        "flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20 hide-on-mini",
-                        isActive && "opacity-100" // Keep visible if active so user knows actions are there
+                        "flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 hide-on-mini",
+                        isActive && "opacity-100"
                     )}>
                         <Button
                             size="icon"
                             variant="ghost"
-                            className="h-7 w-7 hover:bg-yellow-500/20 hover:text-yellow-600 transition-all duration-200 hover:scale-110"
+                            className="h-6 w-6 hover:bg-amber-500/20 hover:text-amber-600"
                             onClick={handleFavorite}
+                            title="Favorite"
                         >
-                            <Star className={cn(
-                                "w-3.5 h-3.5 transition-all duration-200",
-                                isFavorite && "fill-yellow-500 text-yellow-500"
-                            )} />
+                            <Star className={cn("w-3 h-3", isFavorite && "fill-amber-500 text-amber-500")} />
                         </Button>
                         <Button
                             size="icon"
                             variant="ghost"
-                            className="h-7 w-7 hover:bg-blue-500/20 hover:text-blue-600 transition-all duration-200 hover:scale-110"
+                            className="h-6 w-6 hover:bg-indigo-500/20 hover:text-indigo-600"
                             onClick={handleShare}
+                            title="Copy link"
                         >
-                            <Share2 className="w-3.5 h-3.5" />
+                            <Share2 className="w-3 h-3" />
                         </Button>
                         <Button
                             size="icon"
                             variant="ghost"
-                            className="h-7 w-7 hover:bg-red-500/20 hover:text-red-600 transition-all duration-200 hover:scale-110"
+                            className="h-6 w-6 hover:bg-rose-500/20 hover:text-rose-600"
                             onClick={handleDelete}
                             disabled={isDeleting}
+                            title="Delete"
                         >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-3 h-3" />
                         </Button>
                     </div>
                 </div>
@@ -181,81 +175,33 @@ export function SidebarDocumentItem({
             {/* Hover Preview Tooltip */}
             {showPreview && excerpt && (
                 <div
-                    className="absolute left-full ml-2 top-0 z-50 w-72 p-4 bg-popover border rounded-lg shadow-lg animate-in fade-in slide-in-from-left-2 duration-200"
+                    className="absolute left-full ml-2 top-0 z-50 w-72 p-3.5 bg-popover/95 backdrop-blur-md border border-border/60 rounded-xl shadow-xl animate-in fade-in slide-in-from-left-2 duration-200"
                     style={{ pointerEvents: 'none' }}
                 >
-                    <div className="space-y-2">
-                        <div className="flex items-start justify-between gap-2">
-                            <h4 className="font-semibold text-sm line-clamp-2">{title}</h4>
-                        </div>
+                    <div className="space-y-2 text-xs">
+                        <h4 className="font-semibold text-foreground line-clamp-2">{title}</h4>
                         {url && (
                             <a
                                 href={url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1 truncate"
+                                className="text-[11px] text-indigo-500 hover:underline flex items-center gap-1 truncate"
                                 style={{ pointerEvents: 'auto' }}
                             >
                                 <ExternalLink className="w-3 h-3 shrink-0" />
                                 <span className="truncate">{url}</span>
                             </a>
                         )}
-                        <p className="text-xs text-muted-foreground line-clamp-4">
+                        <p className="text-muted-foreground line-clamp-3 leading-relaxed text-[11px]">
                             {excerpt}
                         </p>
-                        <div className="flex items-center justify-between pt-2 border-t mt-3">
-                            <span className="text-xs text-muted-foreground">{formattedDate}</span>
-                            <div className="flex gap-1 items-center">
-                                {/* Duplicate controls in tooltip for mini-mode access */}
-                                <div className="flex items-center gap-1 mr-2 pr-2 border-r">
-                                    <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="h-7 w-7 hover:bg-yellow-500/20 hover:text-yellow-600"
-                                        onClick={handleFavorite}
-                                        style={{ pointerEvents: 'auto' }}
-                                    >
-                                        <Star className={cn(
-                                            "w-3.5 h-3.5",
-                                            isFavorite && "fill-yellow-500 text-yellow-500"
-                                        )} />
-                                    </Button>
-                                    <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="h-7 w-7 hover:bg-blue-500/20 hover:text-blue-600"
-                                        onClick={handleShare}
-                                        style={{ pointerEvents: 'auto' }}
-                                    >
-                                        <Share2 className="w-3.5 h-3.5" />
-                                    </Button>
-                                    <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="h-7 w-7 hover:bg-red-500/20 hover:text-red-600"
-                                        onClick={handleDelete}
-                                        disabled={isDeleting}
-                                        style={{ pointerEvents: 'auto' }}
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                    </Button>
-                                </div>
-                                <div className="flex gap-1">
-                                    <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                                    <span className="text-xs text-muted-foreground">Ready</span>
-                                </div>
-                            </div>
+                        <div className="flex items-center justify-between pt-2 border-t border-border/40 text-[10px] text-muted-foreground">
+                            <span>{formattedDate}</span>
+                            <span className="text-emerald-500 font-medium">Ready for Chat</span>
                         </div>
                     </div>
                 </div>
             )}
-
-            <style jsx>{`
-                @keyframes shimmer {
-                    0% { background-position: 200% 0; }
-                    100% { background-position: -200% 0; }
-                }
-            `}</style>
         </div>
     );
 }

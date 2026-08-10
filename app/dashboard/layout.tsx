@@ -1,5 +1,5 @@
 import { AppSidebar } from '@/components/app-sidebar';
-import { createClient } from '@/lib/supabase-server';
+import { getServerUser } from '@/lib/firebase-server';
 import { redirect } from 'next/navigation';
 import { ResizableLayout } from '@/components/resizable-layout';
 
@@ -8,8 +8,7 @@ export default async function DashboardLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getServerUser();
 
     if (!user) {
         redirect('/login');
@@ -23,3 +22,4 @@ export default async function DashboardLayout({
         </ResizableLayout>
     );
 }
+

@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase-server';
+import { getServerUser } from '@/lib/firebase-server';
+import { queryFirestoreDocs, deleteFirestoreDoc } from '@/lib/firestore-rest';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function DELETE(
@@ -7,44 +8,19 @@ export async function DELETE(
 ) {
     const params = await props.params;
     try {
-        const supabase = await createClient();
-
-        // Get the current user
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getServerUser();
         if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const documentId = params.id;
 
-        // First, delete all chunks associated with this document
-        const { error: chunksError } = await supabase
-            .from('chunks')
-            .delete()
-            .eq('document_id', documentId);
+        // Delete all chunks associated with this document in Firestore via REST
+        const chunks = await queryFirestoreDocs('chunks', 'document_id', documentId, user.token);
+        await Promise.all(chunks.map((chunk) => deleteFirestoreDoc('chunks', chunk.id, user.token)));
 
-        if (chunksError) {
-            console.error('Error deleting chunks:', chunksError);
-            return NextResponse.json(
-                { error: 'Failed to delete document chunks' },
-                { status: 500 }
-            );
-        }
-
-        // Then delete the document itself
-        const { error: documentError } = await supabase
-            .from('documents')
-            .delete()
-            .eq('id', documentId)
-            .eq('user_id', user.id); // Ensure user can only delete their own documents
-
-        if (documentError) {
-            console.error('Error deleting document:', documentError);
-            return NextResponse.json(
-                { error: 'Failed to delete document' },
-                { status: 500 }
-            );
-        }
+        // Delete document in Firestore via REST
+        await deleteFirestoreDoc('documents', documentId, user.token);
 
         return NextResponse.json({ success: true });
     } catch (error) {
@@ -55,3 +31,6 @@ export async function DELETE(
         );
     }
 }
+
+
+

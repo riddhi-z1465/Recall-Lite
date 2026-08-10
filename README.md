@@ -1,91 +1,98 @@
 # Recall Lite 🧠
 
-A premium "Second Brain" web application that enables users to save URLs, process content intelligently, and interact with their knowledge base through AI-powered chat. Built with modern web technologies and designed for a seamless, premium user experience.
+A premium, state-of-the-art "Second Brain" web application that enables users to save URLs, automatically scrape and process web page content, and interact with their personalized knowledge base through AI-powered RAG chat. Built with **Next.js 16**, **Firebase (Auth & Firestore)**, **Tailwind CSS 4**, and **Vercel AI SDK**.
+
+---
 
 ## ✨ Features
 
 ### Core Functionality
-- **📎 URL Processing**: Intelligent web scraping, content cleaning, chunking, and embedding of web pages
-- **💬 AI Chat Interface**: RAG-based conversational AI that strictly responds from your saved content with source citations
-- **🔍 Vector Search**: Advanced semantic search powered by Supabase pgvector
-- **👤 User Authentication**: Secure authentication and user management with Supabase Auth
-- **🔐 Row-Level Security**: Complete data isolation ensuring users only access their own content
+- **📎 URL Scraping & Vector Indexing**: Automatic web scraping, content cleaning, chunking, and embedding generation for saved articles and web pages.
+- **💬 RAG AI Chat Interface**: RAG (Retrieval-Augmented Generation) conversational AI that answers questions strictly based on your saved knowledge base with source links.
+- **⚡ Real-time Response Streaming**: Live AI response streaming powered by Groq & Vercel AI SDK.
+- **👤 Firebase Authentication**: Secure email/password authentication & session management powered by Firebase Auth.
+- **🔒 Isolated Knowledge Storage**: User-scoped document storage in Firebase Firestore ensuring absolute privacy.
 
-### User Experience
-- **🎨 Premium UI/UX**: 
-  - Modern dark mode interface
-  - Smooth transitions and micro-animations
-  - Responsive sidebar with hover effects
-  - Interactive document management (favorite, share, delete)
-  - Optimistic UI updates for instant feedback
-- **⚡️ Real-time Streaming**: Live AI response streaming using Groq Llama 3.3 70B
-- **📱 Responsive Design**: Fully responsive across all device sizes
-- **🎯 Document Management**: Organized knowledge base with quick actions per document
+### User Interface & Experience
+- **🎨 Glassmorphic Aesthetic & Design System**: Modern translucent cards, ambient glowing mesh backgrounds, custom scrollbars, and smooth micro-interactions.
+- **🌙 Dark / Light Mode Support**: Seamless theme switching (Light, Dark, System) powered by `next-themes`.
+- **📊 Knowledge Statistics**: Real-time stats banner displaying total saved items, estimated total read time, and total source domains.
+- **🔍 Real-time Search & Filtering**: Live search filtering by title, URL, or excerpt with multiple sorting options (*Newest*, *Oldest*, *Title*).
+- **🎛 Grid vs. Compact List Views**: Instant layout toggle between Grid View cards and Compact List View rows.
+- **📝 Formatted Markdown AI Chat**: Rich AI response formatting featuring bold, bulleted/numbered lists, blockquotes, tables, and syntax-highlighted code blocks with a 1-click **Copy Code** button.
+- **💡 Starter Prompt Chips**: 1-click starter question chips (*⚡ 3-Point Summary*, *💡 Main Takeaways*, *❓ Key Q&As*, *📝 Action Items*) when starting a document chat.
+- **🏷 Auto Domain Favicons & Read Time Badges**: Automatic website favicon badges and read-time estimation tags per document.
+- **📱 Fully Responsive**: Modern glassmorphic sidebar and drawer menu built for desktop, tablet, and mobile screens.
+
+---
 
 ## 🛠 Tech Stack
 
 ### Frontend
-- **Framework**: Next.js 16 (App Router)
-- **Styling**: Tailwind CSS 4
-- **UI Components**: Shadcn UI, Radix UI primitives
-- **Icons**: Lucide React
-- **Themes**: next-themes for dark mode support
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router & Turbopack)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) & CSS Variables
+- **UI Primitives**: [Radix UI](https://www.radix-ui.com/) & [Shadcn UI](https://ui.shadcn.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Theming**: `next-themes`
 
-### Backend
-- **API**: Next.js API Routes
-- **Database**: Supabase (PostgreSQL with pgvector extension)
-- **Authentication**: Supabase Auth with NextAuth.js integration
-- **Storage**: Supabase Storage for assets
+### Backend & Database
+- **API**: Next.js App Router Route Handlers (`/api/add-url`, `/api/chat`, `/api/documents/[id]`)
+- **Authentication**: [Firebase Authentication](https://firebase.google.com/docs/auth)
+- **Database**: [Firebase Firestore](https://firebase.google.com/docs/firestore)
 
 ### AI & ML
-- **Embeddings**: 
-  - Local: Xenova Transformers (all-MiniLM-L6-v2)
-  - Cloud: OpenAI Embeddings (optional)
-- **LLM**: Groq (Llama 3.3 70B Versatile) via Vercel AI SDK
-- **Text Processing**: LangChain Text Splitters for intelligent chunking
-- **Web Scraping**: Cheerio for HTML parsing and content extraction
+- **LLM**: Groq (`llama-3.3-70b-versatile`) / Google Generative AI via [Vercel AI SDK](https://sdk.vercel.ai/docs)
+- **Embeddings**: Local Xenova Transformers (`all-MiniLM-L6-v2`) / OpenAI Embeddings
+- **Text Processing**: LangChain Text Splitters
+- **Web Scraping**: Cheerio for clean HTML parsing
+
+---
 
 ## 📂 Project Structure
 
 ```
-recall-lite/
+Recall-Lite/
 ├── app/
+│   ├── (auth)/
+│   │   └── login/             # Glassmorphic Auth page (Sign In / Sign Up)
 │   ├── api/
-│   │   ├── add-url/          # URL processing endpoint
-│   │   ├── chat/             # Chat API with streaming
-│   │   └── documents/        # Document CRUD operations
-│   ├── chat/[id]/            # Individual chat pages
-│   ├── dashboard/            # Main dashboard
-│   ├── login/                # Authentication page
-│   ├── layout.tsx            # Root layout with providers
-│   └── globals.css           # Global styles
+│   │   ├── add-url/           # Scraping, chunking & Firestore embedding route
+│   │   ├── chat/              # RAG context retrieval & streaming chat route
+│   │   └── documents/[id]/    # Document deletion route
+│   ├── chat/[documentId]/     # Chat interface page per document
+│   ├── dashboard/             # Main Knowledge Dashboard
+│   ├── layout.tsx             # Root layout with Theme & Auth providers
+│   └── globals.css            # Custom CSS variables, glassmorphic styles & scrollbars
 ├── components/
-│   ├── ui/                   # Shadcn UI components
-│   ├── chat-interface.tsx    # Main chat component
-│   ├── sidebar-document-item.tsx  # Document list items
-│   └── ...                   # Other custom components
+│   ├── ui/                    # Base Radix/Shadcn UI components
+│   ├── add-link-form.tsx      # URL saver form with sample pills & favicon preview
+│   ├── app-sidebar.tsx        # Glassmorphic navigation sidebar
+│   ├── chat-interface.tsx     # Active document chat interface with prompt chips
+│   ├── chat-markdown.tsx      # Markdown & code block syntax renderer
+│   ├── dashboard-client.tsx   # Client dashboard with search, stats & layout view toggle
+│   ├── document-card.tsx       # Document card (Grid & List layout support)
+│   ├── sidebar-document-item.tsx # Sidebar document row with preview tooltip
+│   └── theme-toggle.tsx       # Light / Dark / System theme switcher
 ├── lib/
-│   ├── supabase/             # Supabase client utilities
-│   ├── embeddings.ts         # Embedding generation
-│   ├── text-processing.ts    # Text chunking and cleaning
-│   └── utils.ts              # Helper functions
-├── supabase/
-│   └── migrations/           # Database migrations
-├── types/                    # TypeScript type definitions
-└── middleware.ts             # Auth middleware
+│   ├── firebase.ts            # Client Firebase setup
+│   ├── firebase-server.ts     # Server-side Firebase helpers & REST queries
+│   └── embeddings.ts          # Text embedding generation pipeline
+└── types/                     # TypeScript definitions
 ```
+
+---
 
 ## ⚡️ Setup & Installation
 
 ### Prerequisites
 - Node.js 20+ and npm
-- A Supabase account and project
-- A Groq API key (free tier available)
+- A Firebase project with Firestore and Auth enabled
+- A Groq API key (free tier available at [groq.com](https://groq.com))
 
 ### Step 1: Clone the Repository
 ```bash
-git clone <repo-url>
-cd recall-lite
+git clone https://github.com/your-username/Recall-Lite.git
+cd Recall-Lite
 ```
 
 ### Step 2: Install Dependencies
@@ -93,225 +100,55 @@ cd recall-lite
 npm install
 ```
 
-### Step 3: Environment Configuration
+### Step 3: Configure Environment Variables
 Create a `.env.local` file in the root directory:
 
 ```env
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+# Firebase Configuration
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 
-# AI Configuration
+# AI API Key
 GROQ_API_KEY=your_groq_api_key
 
-# Optional: OpenAI (if using OpenAI embeddings instead of local)
+# Optional: Google AI / OpenAI keys
+# GOOGLE_GENERATIVE_AI_API_KEY=your_google_ai_key
 # OPENAI_API_KEY=your_openai_api_key
 ```
 
-### Step 4: Supabase Database Setup
-
-1. Create a new project on [Supabase](https://supabase.com)
-2. Navigate to the SQL Editor in your Supabase dashboard
-3. Run the following migration files **in order**:
-
-   **Required Migrations:**
-   ```sql
-   -- 1. Initial Schema (Tables, RLS, pgvector)
-   supabase/migrations/20240101000000_initial_schema.sql
-   
-   -- 2. Schema Fixes and Policies
-   supabase/migrations/20251128_fix_schema_mismatch.sql
-   
-   -- 3. Vector Search Function
-   supabase/migrations/20240101000001_match_page.sql
-   
-   -- 4. Document Cleanup (removes invalid UUIDs)
-   supabase/migrations/20251201_cleanup_invalid_documents.sql
-   ```
-
-   **What gets created:**
-   - `documents` table: Stores URL metadata and user associations
-   - `chunks` table: Stores text chunks with embeddings (1536 dimensions)
-   - `pgvector` extension: Enables vector similarity search
-   - `match_page_sections` function: Performs semantic search
-   - Row Level Security policies: Ensures data isolation per user
-
-### Step 5: Run Development Server
+### Step 4: Run Development Server
 ```bash
 npm run dev
 ```
 
-The application will be available at [http://localhost:3000](http://localhost:3000)
-
-### Step 6: First Login
-1. Navigate to `/login`
-2. Sign up with your email
-3. Verify your email (check Supabase Auth settings for email confirmation)
-4. Start adding URLs to your knowledge base!
-
-## � Usage
-
-### Adding Content
-1. Click "Add URL" in the dashboard
-2. Paste any web URL
-3. The system will:
-   - Scrape the content
-   - Clean and chunk the text
-   - Generate embeddings
-   - Store in your knowledge base
-
-### Chatting with Your Knowledge
-1. Select a document from the sidebar
-2. Ask questions in natural language
-3. The AI will respond using **only** information from your saved content
-4. Sources are cited for transparency
-
-### Managing Documents
-- **Favorite**: Star important documents for quick access
-- **Share**: Generate shareable links (if implemented)
-- **Delete**: Remove documents and all associated chunks
-
-## 🏗 Architecture
-
-### Data Flow
-```
-User Input (URL) 
-  → Web Scraping (Cheerio)
-  → Text Cleaning & Chunking (LangChain)
-  → Embedding Generation (Xenova/OpenAI)
-  → Storage (Supabase)
-  → Vector Search (pgvector)
-  → LLM Response (Groq)
-  → Streamed to User
-```
-
-### Key Components
-
-**Embedding Pipeline:**
-- Uses `all-MiniLM-L6-v2` model locally via Xenova Transformers
-- Generates 384-dimensional vectors (normalized to 1536 for compatibility)
-- Fallback to OpenAI embeddings if configured
-
-**RAG Implementation:**
-- Strict retrieval-augmented generation
-- No hallucination - responses only from saved content
-- Cosine similarity search with configurable threshold
-- Context window management for optimal LLM performance
-
-**Security:**
-- Row-Level Security (RLS) on all tables
-- User-scoped queries via Supabase Auth
-- Input validation and sanitization
-- Secure API routes with middleware protection
-
-## 🔧 Configuration
-
-### Embedding Models
-Switch between local and cloud embeddings in `lib/embeddings.ts`:
-
-```typescript
-// Local (default)
-export const generateEmbedding = generateLocalEmbedding;
-
-// OpenAI (requires OPENAI_API_KEY)
-export const generateEmbedding = generateOpenAIEmbedding;
-```
-
-### LLM Settings
-Modify the model and parameters in `app/api/chat/route.ts`:
-
-```typescript
-const model = groq('llama-3.3-70b-versatile');
-// Adjust temperature, max_tokens, etc.
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**"Error searching documents"**
-- Ensure all migration files are run in order
-- Check that `match_page_sections` function exists in Supabase
-- Verify document IDs are valid UUIDs (run cleanup migration)
-
-**Embeddings not generating**
-- Check that Xenova models are downloading (first run takes time)
-- Verify sufficient memory for local embeddings
-- Consider switching to OpenAI embeddings for production
-
-**Authentication issues**
-- Verify environment variables are set correctly
-- Check Supabase Auth settings (email confirmation, providers)
-- Clear browser cookies and try again
-
-**Chat not streaming**
-- Verify Groq API key is valid and has quota
-- Check network tab for API errors
-- Ensure model name is correct
-
-### Database Cleanup
-If you encounter UUID errors, run:
-```sql
--- In Supabase SQL Editor
-DELETE FROM documents WHERE id !~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$';
-```
-
-## 🔒 Security Best Practices
-
-- **Environment Variables**: Never commit `.env.local` to version control
-- **API Keys**: Rotate keys regularly, especially for production
-- **RLS Policies**: Always test policies to ensure proper data isolation
-- **Input Validation**: All user inputs are sanitized before processing
-- **HTTPS**: Use HTTPS in production for all API calls
-
-## 📈 Performance Optimization
-
-- **Chunking**: Optimized chunk size (500-1000 tokens) for better retrieval
-- **Caching**: Consider implementing Redis for embedding cache
-- **Batch Processing**: Process multiple URLs asynchronously
-- **Database Indexing**: pgvector indexes for fast similarity search
-- **Edge Functions**: Consider Supabase Edge Functions for heavy processing
-
-## 🚢 Deployment
-
-### Vercel (Recommended)
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel --prod
-```
-
-**Environment Variables**: Add all `.env.local` variables to Vercel project settings
-
-### Other Platforms
-- Ensure Node.js 20+ runtime
-- Set all environment variables
-- Configure build command: `npm run build`
-- Configure start command: `npm start`
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes with clear commit messages
-4. Test thoroughly
-5. Submit a pull request
-
-## 📝 License
-
-MIT License - feel free to use this project for personal or commercial purposes.
-
-## 🙏 Acknowledgments
-
-- **Vercel AI SDK**: For seamless LLM integration
-- **Supabase**: For the amazing backend platform
-- **Groq**: For fast LLM inference
-- **Xenova**: For browser-based transformers
-- **Shadcn**: For beautiful UI components
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-**Built with ❤️ for knowledge workers who want to remember everything.**
+## 💡 How It Works
+
+1. **Save an Article**: Paste any web URL into the Dashboard URL bar (or click one of the quick sample chips).
+2. **Content Extraction**: The system scrapes the web page with Cheerio, cleans unnecessary boilerplate, and chunks the main body text.
+3. **Vector Embeddings**: Text chunks are embedded and saved into Firebase Firestore under your account.
+4. **Interactive Chat**: Click on any saved document to open the AI Chat. Ask custom questions or use the starter prompt chips (*3-Point Summary*, *Action Items*) to receive instant streamed AI answers with full Markdown & code block formatting.
+
+---
+
+## 🚢 Production Build
+
+To verify and test a production build locally:
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+## 📝 License
+
+MIT License — feel free to use and customize this project for your personal or commercial knowledge base!
