@@ -24,9 +24,9 @@ if (!app) {
   }
 }
 
-let auth: ReturnType<typeof getAuth> | undefined;
-let db: ReturnType<typeof getFirestore> | undefined;
-let storage: ReturnType<typeof getStorage> | undefined;
+let auth: any;
+let db: any;
+let storage: any;
 
 if (app) {
   try {
@@ -38,5 +38,4 @@ if (app) {
   }
 }
 
-// Ignore TS errors for exports if undefined, to keep existing code typing happy without rewriting everything
-export { app, auth as any, db as any, storage as any };
+export { app, auth, db, storage };
