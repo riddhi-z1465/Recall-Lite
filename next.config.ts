@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
-  serverExternalPackages: ['onnxruntime-node', '@xenova/transformers'],
 };
 
 export default nextConfig;

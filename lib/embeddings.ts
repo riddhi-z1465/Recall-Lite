@@ -1,33 +1,20 @@
-import { pipeline, env } from '@xenova/transformers';
-
-// Setup for Vercel Serverless environment:
-// 1. Disable local model lookups (serverless environments are read-only)
-env.allowLocalModels = false;
-// 2. Set the cache directory to /tmp, which is writable on Vercel
-env.cacheDir = '/tmp';
-// Singleton to prevent reloading the model on every request
-class EmbeddingPipeline {
-    static task = 'feature-extraction';
-    static model = 'Xenova/all-MiniLM-L6-v2';
-    static instance: any = null;
-
-    static async getInstance() {
-        if (this.instance === null) {
-            this.instance = await pipeline(this.task as any, this.model);
-        }
-        return this.instance;
-    }
-}
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export async function getEmbeddings(text: string) {
     try {
-        const extractor = await EmbeddingPipeline.getInstance();
-        const output = await extractor(text.replace(/\n/g, ' '), { pooling: 'mean', normalize: true });
-        const embedding = Array.from(output.data) as number[];
+        const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+        if (!apiKey) {
+            console.warn("⚠️ GEMINI_API_KEY is missing. Returning zero vector.");
+            return new Array(1536).fill(0);
+        }
 
-        // Pad to 1536 dimensions to match OpenAI's format and existing DB schema
-        // This allows us to use the existing vector column without migration, 
-        // though old OpenAI embeddings will not be compatible with new ones.
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: 'text-embedding-004' });
+        
+        const result = await model.embedContent(text);
+        const embedding = result.embedding.values;
+
+        // Pad to 1536 dimensions to match existing DB schema
         if (embedding.length < 1536) {
             const padding = new Array(1536 - embedding.length).fill(0);
             return [...embedding, ...padding];
@@ -35,7 +22,7 @@ export async function getEmbeddings(text: string) {
 
         return embedding.slice(0, 1536);
     } catch (error) {
-        console.error('Error generating embeddings:', error);
+        console.error('Error generating embeddings with Gemini:', error);
         // Fallback to zero vector
         return new Array(1536).fill(0);
     }
