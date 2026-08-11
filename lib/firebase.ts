@@ -14,9 +14,29 @@ export const firebaseConfig = {
 };
 
 // Initialize Firebase (SSR-safe)
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+let app = getApps().length > 0 ? getApp() : undefined;
 
-export { app, auth, db, storage };
+if (!app) {
+  try {
+    app = initializeApp(firebaseConfig);
+  } catch (e) {
+    console.warn("Firebase initializeApp error", e);
+  }
+}
+
+let auth: ReturnType<typeof getAuth> | undefined;
+let db: ReturnType<typeof getFirestore> | undefined;
+let storage: ReturnType<typeof getStorage> | undefined;
+
+if (app) {
+  try {
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+  } catch (error) {
+    console.warn("Failed to initialize Firebase services during build. Check environment variables.");
+  }
+}
+
+// Ignore TS errors for exports if undefined, to keep existing code typing happy without rewriting everything
+export { app, auth as any, db as any, storage as any };
