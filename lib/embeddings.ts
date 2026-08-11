@@ -1,5 +1,10 @@
-import { pipeline } from '@xenova/transformers';
+import { pipeline, env } from '@xenova/transformers';
 
+// Setup for Vercel Serverless environment:
+// 1. Disable local model lookups (serverless environments are read-only)
+env.allowLocalModels = false;
+// 2. Set the cache directory to /tmp, which is writable on Vercel
+env.cacheDir = '/tmp';
 // Singleton to prevent reloading the model on every request
 class EmbeddingPipeline {
     static task = 'feature-extraction';
