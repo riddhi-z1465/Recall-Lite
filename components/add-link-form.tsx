@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Loader2, Link2, CheckCircle2, AlertCircle, Sparkles, Globe } from 'lucide-react';
+import { Plus, Loader2, Link2, CheckCircle2, AlertCircle, Sparkles, Globe, Bot, Atom, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const SAMPLE_LINKS = [
-    { label: '🤖 Wikipedia AI', url: 'https://en.wikipedia.org/wiki/Artificial_intelligence' },
-    { label: '⚛️ React Docs', url: 'https://react.dev/learn' },
-    { label: '⚡ Next.js Features', url: 'https://nextjs.org/docs/app/building-your-application' },
+    { label: 'Wikipedia AI', icon: Bot, url: 'https://en.wikipedia.org/wiki/Artificial_intelligence' },
+    { label: 'React Docs', icon: Atom, url: 'https://react.dev/learn' },
+    { label: 'Next.js Features', icon: Zap, url: 'https://nextjs.org/docs/app/building-your-application' },
 ];
 
 export function AddLinkForm() {
@@ -121,16 +121,20 @@ export function AddLinkForm() {
                     <span className="text-muted-foreground font-medium flex items-center gap-1">
                         <Sparkles className="w-3 h-3 text-amber-500" /> Try example:
                     </span>
-                    {SAMPLE_LINKS.map((sample) => (
-                        <button
-                            key={sample.url}
-                            type="button"
-                            onClick={() => setUrl(sample.url)}
-                            className="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/40 transition-colors"
-                        >
-                            {sample.label}
-                        </button>
-                    ))}
+                    {SAMPLE_LINKS.map((sample) => {
+                        const Icon = sample.icon;
+                        return (
+                            <button
+                                key={sample.url}
+                                type="button"
+                                onClick={() => setUrl(sample.url)}
+                                className="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/40 transition-colors flex items-center gap-1.5"
+                            >
+                                <Icon className="w-3.5 h-3.5" />
+                                {sample.label}
+                            </button>
+                        );
+                    })}
                 </div>
 
                 {/* Toast Status Message */}

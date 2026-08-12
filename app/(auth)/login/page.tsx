@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
-import { Brain, Sparkles, Eye, EyeOff, ArrowRight, CheckCircle2, AlertCircle, Loader2, Lock, Mail } from 'lucide-react';
+import { Brain, Sparkles, Eye, EyeOff, ArrowRight, CheckCircle2, AlertCircle, Loader2, Lock, Mail, Zap, MessageSquare, ShieldCheck } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function LoginPage() {
@@ -202,15 +202,21 @@ export default function LoginPage() {
                         {/* Feature Badges */}
                         <div className="pt-4 border-t border-border/50 grid grid-cols-3 gap-2 text-center text-[11px] text-muted-foreground">
                             <div className="p-2 rounded-lg bg-muted/40 flex flex-col items-center gap-1">
-                                <span className="font-semibold text-indigo-600 dark:text-indigo-400">⚡ Scraping</span>
+                                <span className="flex items-center gap-1 font-semibold text-indigo-600 dark:text-indigo-400">
+                                    <Zap className="w-3.5 h-3.5" /> Scraping
+                                </span>
                                 <span>Save links</span>
                             </div>
                             <div className="p-2 rounded-lg bg-muted/40 flex flex-col items-center gap-1">
-                                <span className="font-semibold text-purple-600 dark:text-purple-400">💬 AI Vector</span>
+                                <span className="flex items-center gap-1 font-semibold text-purple-600 dark:text-purple-400">
+                                    <MessageSquare className="w-3.5 h-3.5" /> AI Vector
+                                </span>
                                 <span>RAG Chat</span>
                             </div>
                             <div className="p-2 rounded-lg bg-muted/40 flex flex-col items-center gap-1">
-                                <span className="font-semibold text-pink-600 dark:text-pink-400">🔒 Secure</span>
+                                <span className="flex items-center gap-1 font-semibold text-pink-600 dark:text-pink-400">
+                                    <ShieldCheck className="w-3.5 h-3.5" /> Secure
+                                </span>
                                 <span>Private Data</span>
                             </div>
                         </div>

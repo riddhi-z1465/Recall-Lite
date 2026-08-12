@@ -17,7 +17,11 @@ import {
     Copy,
     Check,
     ExternalLink,
-    Globe
+    Globe,
+    Zap,
+    Lightbulb,
+    HelpCircle,
+    ListTodo
 } from 'lucide-react';
 import Link from 'next/link';
 import { ChatMarkdown } from '@/components/chat-markdown';
@@ -44,10 +48,10 @@ interface ChatInterfaceProps {
 }
 
 const STARTER_PROMPTS = [
-    { label: '⚡ 3-Point Summary', prompt: 'Summarize the top 3 key takeaways from this document in clear bullet points.' },
-    { label: '💡 Main Takeaways', prompt: 'What are the main arguments and conclusions presented in this article?' },
-    { label: '❓ Key Q&As', prompt: 'List 3 important questions this document answers, along with concise answers.' },
-    { label: '📝 Action Items', prompt: 'Extract any practical advice, steps, or actionable insights mentioned in this text.' },
+    { label: '3-Point Summary', icon: Zap, prompt: 'Summarize the top 3 key takeaways from this document in clear bullet points.' },
+    { label: 'Main Takeaways', icon: Lightbulb, prompt: 'What are the main arguments and conclusions presented in this article?' },
+    { label: 'Key Q&As', icon: HelpCircle, prompt: 'List 3 important questions this document answers, along with concise answers.' },
+    { label: 'Action Items', icon: ListTodo, prompt: 'Extract any practical advice, steps, or actionable insights mentioned in this text.' },
 ];
 
 export function ChatInterface({ documentId, documents = [], userEmail }: ChatInterfaceProps) {
@@ -100,7 +104,7 @@ export function ChatInterface({ documentId, documents = [], userEmail }: ChatInt
                     {
                         id: (Date.now() + 1).toString(),
                         role: 'assistant',
-                        content: `⚠️ ${errorText || 'Sorry, there was an error processing your request.'}`,
+                        content: `Error: ${errorText || 'Sorry, there was an error processing your request.'}`,
                     },
                 ]);
                 return;
@@ -144,7 +148,7 @@ export function ChatInterface({ documentId, documents = [], userEmail }: ChatInt
                 {
                     id: (Date.now() + 1).toString(),
                     role: 'assistant',
-                    content: `⚠️ ${error?.message || 'Sorry, there was an error processing your request.'}`,
+                    content: `Error: ${error?.message || 'Sorry, there was an error processing your request.'}`,
                 },
             ]);
         } finally {
@@ -307,21 +311,25 @@ export function ChatInterface({ documentId, documents = [], userEmail }: ChatInt
 
                                 {/* Starter Chips */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-xl mx-auto pt-2">
-                                    {STARTER_PROMPTS.map((starter) => (
+                                {STARTER_PROMPTS.map((starter) => {
+                                    const Icon = starter.icon;
+                                    return (
                                         <button
                                             key={starter.label}
                                             type="button"
                                             onClick={() => handleSendMessage(starter.prompt)}
                                             className="p-3 rounded-xl border border-border/60 bg-card/60 hover:bg-accent/80 hover:border-indigo-500/40 transition-all duration-200 text-left space-y-1 shadow-sm hover:shadow group"
                                         >
-                                            <div className="text-xs font-semibold group-hover:text-indigo-500 transition-colors">
+                                            <div className="text-xs font-semibold group-hover:text-indigo-500 transition-colors flex items-center gap-1.5">
+                                                <Icon className="w-3.5 h-3.5 text-indigo-500/70" />
                                                 {starter.label}
                                             </div>
                                             <div className="text-[11px] text-muted-foreground line-clamp-1">
                                                 {starter.prompt}
                                             </div>
                                         </button>
-                                    ))}
+                                    );
+                                })}
                                 </div>
                             </div>
                         )}
