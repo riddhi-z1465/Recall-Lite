@@ -88,7 +88,7 @@ export function DashboardClient({ documents }: DashboardClientProps) {
                         <Brain className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                         <Sparkles className="w-2.5 h-2.5 absolute -top-1 -right-1 text-pink-500" />
                     </div>
-                    <span className="font-bold text-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    <span className="font-bold text-lg text-foreground">
                         Recall Lite
                     </span>
                 </div>

@@ -54,11 +54,11 @@ export default function LoginPage() {
             }
         } catch (err: any) {
             console.error('Firebase Auth error:', err);
-            const errorMessage = err?.code === 'auth/invalid-credential' 
-                ? 'Invalid email or password.' 
-                : err?.code === 'auth/email-already-in-use' 
-                ? 'An account with this email already exists.' 
-                : err?.message || 'Authentication failed. Please try again.';
+            const errorMessage = err?.code === 'auth/invalid-credential'
+                ? 'Invalid email or password.'
+                : err?.code === 'auth/email-already-in-use'
+                    ? 'An account with this email already exists.'
+                    : err?.message || 'Authentication failed. Please try again.';
             setMessage({ type: 'error', text: errorMessage });
             setLoading(false);
         }
@@ -84,7 +84,7 @@ export default function LoginPage() {
                             <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-pink-500 animate-spin" style={{ animationDuration: '6s' }} />
                         </div>
                     </div>
-                    <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
                         Recall Lite
                     </h1>
                     <p className="text-sm text-muted-foreground max-w-xs mx-auto">
@@ -100,22 +100,20 @@ export default function LoginPage() {
                             <button
                                 type="button"
                                 onClick={() => { setMode('signin'); setMessage(null); }}
-                                className={`py-2 rounded-md transition-all duration-200 ${
-                                    mode === 'signin'
+                                className={`py-2 rounded-md transition-all duration-200 ${mode === 'signin'
                                         ? 'bg-background text-foreground shadow-sm font-semibold'
                                         : 'text-muted-foreground hover:text-foreground'
-                                }`}
+                                    }`}
                             >
                                 Sign In
                             </button>
                             <button
                                 type="button"
                                 onClick={() => { setMode('signup'); setMessage(null); }}
-                                className={`py-2 rounded-md transition-all duration-200 ${
-                                    mode === 'signup'
+                                className={`py-2 rounded-md transition-all duration-200 ${mode === 'signup'
                                         ? 'bg-background text-foreground shadow-sm font-semibold'
                                         : 'text-muted-foreground hover:text-foreground'
-                                }`}
+                                    }`}
                             >
                                 Create Account
                             </button>
@@ -165,11 +163,10 @@ export default function LoginPage() {
 
                             {/* Alert Message */}
                             {message && (
-                                <div className={`p-3 rounded-lg flex items-start gap-2.5 text-xs ${
-                                    message.type === 'error'
+                                <div className={`p-3 rounded-lg flex items-start gap-2.5 text-xs ${message.type === 'error'
                                         ? 'bg-destructive/10 text-destructive border border-destructive/20'
                                         : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                                }`}>
+                                    }`}>
                                     {message.type === 'error' ? (
                                         <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                                     ) : (

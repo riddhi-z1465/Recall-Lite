@@ -139,11 +139,10 @@ export function AddLinkForm() {
 
                 {/* Toast Status Message */}
                 {message && (
-                    <div className={`mt-3 p-3 rounded-lg flex items-center gap-2 text-xs font-medium animate-in fade-in slide-in-from-top-1 duration-200 ${
-                        message.type === 'success'
+                    <div className={`mt-3 p-3 rounded-lg flex items-center gap-2 text-xs font-medium animate-in fade-in slide-in-from-top-1 duration-200 ${message.type === 'success'
                             ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                             : 'bg-destructive/10 text-destructive border border-destructive/20'
-                    }`}>
+                        }`}>
                         {message.type === 'success' ? (
                             <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
                         ) : (

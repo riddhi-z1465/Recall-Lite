@@ -29,7 +29,7 @@ export async function AppSidebar({ currentDocumentId, className }: AppSidebarPro
                         <Brain className="w-5 h-5 text-indigo-500 transition-transform duration-300 group-hover:scale-110" />
                         <Sparkles className="w-2.5 h-2.5 absolute -top-0.5 -right-0.5 text-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
-                    <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold text-lg tracking-tight hide-on-mini truncate min-w-0">
+                    <span className="text-foreground font-bold text-lg tracking-tight hide-on-mini truncate min-w-0">
                         Recall Lite
                     </span>
                 </Link>

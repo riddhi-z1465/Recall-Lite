@@ -230,7 +230,7 @@ export function ChatInterface({ documentId, documents = [], userEmail }: ChatInt
                                         <div className="p-1.5 rounded-xl bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border border-indigo-500/20">
                                             <Brain className="w-5 h-5 text-indigo-500" />
                                         </div>
-                                        <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold text-lg">
+                                        <span className="text-foreground font-bold text-lg">
                                             Recall Lite
                                         </span>
                                     </Link>
@@ -265,11 +265,10 @@ export function ChatInterface({ documentId, documents = [], userEmail }: ChatInt
                                             return (
                                                 <Link key={doc.id} href={`/chat/${doc.id}`}>
                                                     <div
-                                                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-all duration-200 ${
-                                                            isSelected
+                                                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-all duration-200 ${isSelected
                                                                 ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold border-l-2 border-indigo-500'
                                                                 : 'text-muted-foreground hover:text-foreground hover:bg-accent/80'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-indigo-500' : 'text-muted-foreground'}`} />
                                                         <span className="truncate">{doc.title}</span>
@@ -311,25 +310,25 @@ export function ChatInterface({ documentId, documents = [], userEmail }: ChatInt
 
                                 {/* Starter Chips */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-xl mx-auto pt-2">
-                                {STARTER_PROMPTS.map((starter) => {
-                                    const Icon = starter.icon;
-                                    return (
-                                        <button
-                                            key={starter.label}
-                                            type="button"
-                                            onClick={() => handleSendMessage(starter.prompt)}
-                                            className="p-3 rounded-xl border border-border/60 bg-card/60 hover:bg-accent/80 hover:border-indigo-500/40 transition-all duration-200 text-left space-y-1 shadow-sm hover:shadow group"
-                                        >
-                                            <div className="text-xs font-semibold group-hover:text-indigo-500 transition-colors flex items-center gap-1.5">
-                                                <Icon className="w-3.5 h-3.5 text-indigo-500/70" />
-                                                {starter.label}
-                                            </div>
-                                            <div className="text-[11px] text-muted-foreground line-clamp-1">
-                                                {starter.prompt}
-                                            </div>
-                                        </button>
-                                    );
-                                })}
+                                    {STARTER_PROMPTS.map((starter) => {
+                                        const Icon = starter.icon;
+                                        return (
+                                            <button
+                                                key={starter.label}
+                                                type="button"
+                                                onClick={() => handleSendMessage(starter.prompt)}
+                                                className="p-3 rounded-xl border border-border/60 bg-card/60 hover:bg-accent/80 hover:border-indigo-500/40 transition-all duration-200 text-left space-y-1 shadow-sm hover:shadow group"
+                                            >
+                                                <div className="text-xs font-semibold group-hover:text-indigo-500 transition-colors flex items-center gap-1.5">
+                                                    <Icon className="w-3.5 h-3.5 text-indigo-500/70" />
+                                                    {starter.label}
+                                                </div>
+                                                <div className="text-[11px] text-muted-foreground line-clamp-1">
+                                                    {starter.prompt}
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}
@@ -348,11 +347,10 @@ export function ChatInterface({ documentId, documents = [], userEmail }: ChatInt
                                 )}
 
                                 <div
-                                    className={`relative group max-w-[85%] sm:max-w-[78%] rounded-2xl p-4 shadow-sm ${
-                                        m.role === 'user'
+                                    className={`relative group max-w-[85%] sm:max-w-[78%] rounded-2xl p-4 shadow-sm ${m.role === 'user'
                                             ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white rounded-br-xs'
                                             : 'bg-card border border-border/60 text-card-foreground rounded-bl-xs'
-                                    }`}
+                                        }`}
                                 >
                                     {m.role === 'user' ? (
                                         <p className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</p>
