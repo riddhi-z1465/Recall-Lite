@@ -32,7 +32,7 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
                 );
             } else if (str.startsWith('*') && str.endsWith('*')) {
                 parts.push(
-                    <em key={match.index} className="italic">
+                    <em key={match.index} className="italic text-foreground/90">
                         {str.slice(1, -1)}
                     </em>
                 );
@@ -40,7 +40,7 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
                 parts.push(
                     <code
                         key={match.index}
-                        className="px-1.5 py-0.5 rounded bg-muted font-mono text-[12px] text-indigo-500 dark:text-indigo-300 border border-border/40"
+                        className="px-1.5 py-0.5 rounded bg-muted font-mono text-[12px] text-foreground border border-border/80"
                     >
                         {str.slice(1, -1)}
                     </code>
@@ -54,7 +54,7 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
                             href={linkMatch[2]}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-indigo-500 hover:underline inline-flex items-center gap-0.5 font-medium"
+                            className="text-primary hover:underline inline-flex items-center gap-0.5 font-medium"
                         >
                             {linkMatch[1]}
                             <ExternalLink className="w-3 h-3 inline shrink-0" />
@@ -76,7 +76,7 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
     const blocks = content.split(/(```[\s\S]*?```)/g);
 
     return (
-        <div className="space-y-3 text-sm leading-relaxed">
+        <div className="space-y-2.5 text-sm leading-relaxed text-foreground">
             {blocks.map((block, blockIdx) => {
                 if (block.startsWith('```') && block.endsWith('```')) {
                     // Code Block
@@ -105,19 +105,19 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
                     // Heading 1, 2, 3
                     if (trimmed.startsWith('# ')) {
                         renderedLines.push(
-                            <h1 key={`h1-${lineIdx}`} className="text-xl font-extrabold text-foreground tracking-tight pt-2">
+                            <h1 key={`h1-${lineIdx}`} className="text-lg font-semibold text-foreground tracking-tight pt-2">
                                 {parseInline(trimmed.substring(2))}
                             </h1>
                         );
                     } else if (trimmed.startsWith('## ')) {
                         renderedLines.push(
-                            <h2 key={`h2-${lineIdx}`} className="text-lg font-bold text-foreground tracking-tight pt-2">
+                            <h2 key={`h2-${lineIdx}`} className="text-base font-semibold text-foreground tracking-tight pt-1.5">
                                 {parseInline(trimmed.substring(3))}
                             </h2>
                         );
                     } else if (trimmed.startsWith('### ')) {
                         renderedLines.push(
-                            <h3 key={`h3-${lineIdx}`} className="text-base font-semibold text-foreground pt-1">
+                            <h3 key={`h3-${lineIdx}`} className="text-sm font-semibold text-foreground pt-1">
                                 {parseInline(trimmed.substring(4))}
                             </h3>
                         );
@@ -125,7 +125,7 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
                     // Bullet list item
                     else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
                         currentList.push(
-                            <li key={`li-${lineIdx}`} className="ml-4 list-disc pl-1">
+                            <li key={`li-${lineIdx}`} className="ml-4 list-disc pl-1 text-foreground/90">
                                 {parseInline(trimmed.substring(2))}
                             </li>
                         );
@@ -134,7 +134,7 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
                     else if (/^\d+\.\s/.test(trimmed)) {
                         const contentText = trimmed.replace(/^\d+\.\s/, '');
                         currentList.push(
-                            <li key={`nli-${lineIdx}`} className="ml-4 list-decimal pl-1">
+                            <li key={`nli-${lineIdx}`} className="ml-4 list-decimal pl-1 text-foreground/90">
                                 {parseInline(contentText)}
                             </li>
                         );
@@ -144,7 +144,7 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
                         renderedLines.push(
                             <blockquote
                                 key={`bq-${lineIdx}`}
-                                className="pl-3 border-l-2 border-indigo-500 text-muted-foreground italic my-1"
+                                className="pl-3 border-l-2 border-primary/60 text-muted-foreground italic my-1.5"
                             >
                                 {parseInline(trimmed.substring(2))}
                             </blockquote>
@@ -163,7 +163,7 @@ export function ChatMarkdown({ content }: ChatMarkdownProps) {
                         }
 
                         renderedLines.push(
-                            <p key={`p-${lineIdx}`} className="my-1">
+                            <p key={`p-${lineIdx}`} className="my-1 text-foreground/90 leading-relaxed">
                                 {parseInline(trimmed)}
                             </p>
                         );
@@ -199,9 +199,9 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
     };
 
     return (
-        <div className="relative my-3 rounded-lg overflow-hidden border border-border/60 bg-slate-950 text-slate-100 font-mono text-xs shadow-md">
-            <div className="flex items-center justify-between px-4 py-1.5 bg-slate-900 border-b border-slate-800 text-[11px] text-slate-400">
-                <span className="font-semibold uppercase tracking-wider">{language}</span>
+        <div className="relative my-2.5 rounded-md overflow-hidden border border-border bg-[#0d1117] text-slate-100 font-mono text-xs shadow-xs">
+            <div className="flex items-center justify-between px-3 py-1.5 bg-[#161b22] border-b border-border/80 text-[11px] text-slate-400">
+                <span className="font-medium font-mono uppercase tracking-wider">{language}</span>
                 <button
                     onClick={handleCopy}
                     className="flex items-center gap-1 hover:text-slate-200 transition-colors p-1 rounded"
@@ -210,7 +210,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
                     {copied ? (
                         <>
                             <Check className="w-3.5 h-3.5 text-emerald-400" />
-                            <span className="text-emerald-400 font-sans">Copied!</span>
+                            <span className="text-emerald-400 font-sans">Copied</span>
                         </>
                     ) : (
                         <>
@@ -220,7 +220,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
                     )}
                 </button>
             </div>
-            <pre className="p-4 overflow-x-auto text-[12px] leading-relaxed font-mono">
+            <pre className="p-3.5 overflow-x-auto text-[12px] leading-relaxed font-mono">
                 <code>{code}</code>
             </pre>
         </div>

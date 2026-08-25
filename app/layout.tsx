@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Recall Lite - Your Second Brain",
-  description: "Save links, chat with them. Your personal knowledge base powered by AI.",
+  title: "Recall Lite — Personal Reading Archive & Vector Search",
+  description: "Save web pages, extract clean text, and query your knowledge base.",
 };
 
 import { ThemeProvider } from '@/components/theme-provider';

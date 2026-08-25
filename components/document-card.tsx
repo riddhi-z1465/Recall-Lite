@@ -1,9 +1,9 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Trash2, ExternalLink, Copy, Check, Clock, Globe } from 'lucide-react';
+import { MessageSquare, Trash2, ExternalLink, Copy, Check, Clock, FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -94,38 +94,38 @@ export function DocumentCard({ id, title, url, excerpt, createdAt, viewMode = 'g
 
     if (viewMode === 'list') {
         return (
-            <Card className="group relative overflow-hidden border-border/60 bg-card/60 backdrop-blur-md hover:border-indigo-500/40 hover:shadow-lg transition-all duration-300">
-                <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <Card className="group relative border-border bg-card shadow-2xs hover:border-primary/40 hover:shadow-xs transition-all">
+                <div className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0 flex-1">
                         {/* Domain Favicon or Icon */}
-                        <div className="p-2.5 rounded-xl bg-muted/60 border border-border/40 shrink-0 mt-0.5">
+                        <div className="p-2 rounded-md bg-muted border border-border shrink-0 mt-0.5">
                             {domainHost && !faviconFailed ? (
                                 <img
                                     src={`https://www.google.com/s2/favicons?domain=${domainHost}&sz=32`}
                                     alt={domainHost}
-                                    className="w-5 h-5 rounded"
+                                    className="w-4 h-4 rounded-xs"
                                     onError={() => setFaviconFailed(true)}
                                 />
                             ) : (
-                                <Globe className="w-5 h-5 text-indigo-500" />
+                                <FileText className="w-4 h-4 text-muted-foreground" />
                             )}
                         </div>
 
                         <div className="min-w-0 flex-1 space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                                <Link href={`/chat/${id}`} className="font-semibold hover:text-indigo-500 transition-colors line-clamp-1">
+                                <Link href={`/chat/${id}`} className="text-sm font-medium text-foreground hover:text-primary transition-colors line-clamp-1">
                                     {title}
                                 </Link>
                                 {domainHost && (
-                                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shrink-0">
+                                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-muted text-muted-foreground border border-border/80 shrink-0">
                                         {domainHost}
                                     </span>
                                 )}
                             </div>
-                            <p className="text-xs text-muted-foreground line-clamp-1">
-                                {excerpt || 'No excerpt available.'}
+                            <p className="text-xs text-muted-foreground line-clamp-1 leading-normal">
+                                {excerpt || 'No content preview available.'}
                             </p>
-                            <div className="flex items-center gap-3 text-[11px] text-muted-foreground pt-0.5">
+                            <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
                                 <span>{formattedDate}</span>
                                 <span>•</span>
                                 <span className="flex items-center gap-1">
@@ -136,33 +136,44 @@ export function DocumentCard({ id, title, url, excerpt, createdAt, viewMode = 'g
                     </div>
 
                     {/* Action buttons */}
-                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                    <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
                         {url && (
-                            <Button
-                                size="icon"
-                                variant="ghost"
-                                className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                                onClick={handleCopyUrl}
-                                title="Copy URL"
-                            >
-                                {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                            </Button>
+                            <>
+                                <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-7.5 w-7.5 text-muted-foreground hover:text-foreground"
+                                    onClick={handleCopyUrl}
+                                    title={copied ? "Copied" : "Copy URL"}
+                                >
+                                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                </Button>
+                                <a
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-1.5 rounded text-muted-foreground hover:text-foreground transition-colors"
+                                    title="Open original webpage"
+                                >
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                </a>
+                            </>
                         )}
                         <Link href={`/chat/${id}`}>
-                            <Button size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white font-medium shadow-sm">
-                                <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+                            <Button size="sm" className="h-7.5 px-3 text-xs font-medium">
+                                <MessageSquare className="w-3.5 h-3.5 mr-1" />
                                 Chat
                             </Button>
                         </Link>
                         <Button
                             size="sm"
                             variant={showConfirm ? "destructive" : "ghost"}
-                            className="h-8 text-xs"
+                            className="h-7.5 text-xs text-muted-foreground hover:text-destructive"
                             onClick={handleDelete}
                             disabled={isDeleting}
                         >
-                            <Trash2 className="w-3.5 h-3.5 mr-1" />
-                            {showConfirm ? 'Confirm?' : 'Delete'}
+                            <Trash2 className="w-3.5 h-3.5" />
+                            {showConfirm && <span className="ml-1 text-[11px]">Confirm?</span>}
                         </Button>
                     </div>
                 </div>
@@ -171,86 +182,96 @@ export function DocumentCard({ id, title, url, excerpt, createdAt, viewMode = 'g
     }
 
     return (
-        <Card className="group relative flex flex-col h-full overflow-hidden border-border/60 bg-card/60 backdrop-blur-md hover:border-indigo-500/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            {/* Top Accent Gradient Border */}
-            <div className="h-1 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-            <CardHeader className="pb-3 space-y-2">
-                <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
+        <Card className="group relative flex flex-col h-full border-border bg-card shadow-2xs hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="p-4 space-y-2.5 flex-1 flex flex-col">
+                {/* Header info */}
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
                         {domainHost && !faviconFailed ? (
                             <img
                                 src={`https://www.google.com/s2/favicons?domain=${domainHost}&sz=32`}
                                 alt={domainHost}
-                                className="w-4 h-4 rounded shrink-0"
+                                className="w-3.5 h-3.5 rounded-xs shrink-0"
                                 onError={() => setFaviconFailed(true)}
                             />
                         ) : (
-                            <Globe className="w-4 h-4 text-indigo-500 shrink-0" />
+                            <FileText className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                         )}
-                        {domainHost && (
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 truncate">
+                        {domainHost ? (
+                            <span className="text-[11px] font-mono text-muted-foreground truncate">
                                 {domainHost}
                             </span>
+                        ) : (
+                            <span className="text-[11px] text-muted-foreground">Document</span>
                         )}
                     </div>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 shrink-0">
                         {url && (
-                            <a
-                                href={url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="p-1 rounded text-muted-foreground hover:text-indigo-500 transition-colors"
-                                title="Open original link"
-                            >
-                                <ExternalLink className="w-3.5 h-3.5" />
-                            </a>
+                            <>
+                                <button
+                                    onClick={handleCopyUrl}
+                                    className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors"
+                                    title={copied ? "Copied" : "Copy URL"}
+                                >
+                                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                </button>
+                                <a
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors"
+                                    title="Open original webpage"
+                                >
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                </a>
+                            </>
                         )}
                     </div>
                 </div>
 
-                <CardTitle className="text-base font-bold line-clamp-2 leading-snug group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    <Link href={`/chat/${id}`}>
+                {/* Title */}
+                <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug">
+                    <Link href={`/chat/${id}`} className="hover:text-primary transition-colors">
                         {title}
                     </Link>
-                </CardTitle>
-            </CardHeader>
+                </h3>
 
-            <CardContent className="flex-1 flex flex-col justify-between gap-4 pt-0">
-                <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                {/* Excerpt */}
+                <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed flex-1">
                     {excerpt || 'No excerpt available.'}
                 </p>
 
-                <div className="pt-3 border-t border-border/40 flex items-center justify-between gap-2 mt-auto text-xs">
-                    <div className="flex items-center gap-2 text-muted-foreground text-[11px]">
+                {/* Card footer */}
+                <div className="pt-3 border-t border-border flex items-center justify-between gap-2 mt-auto text-xs">
+                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
                         <span>{formattedDate}</span>
                         <span>•</span>
                         <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3 text-muted-foreground" /> {readTimeMinutes}m
+                            <Clock className="w-3 h-3" /> {readTimeMinutes}m
                         </span>
                     </div>
 
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1">
                         <Button
                             size="sm"
-                            variant={showConfirm ? "destructive" : "outline"}
-                            className="h-8 text-xs px-2.5"
+                            variant={showConfirm ? "destructive" : "ghost"}
+                            className="h-7.5 px-2 text-xs text-muted-foreground hover:text-destructive"
                             onClick={handleDelete}
                             disabled={isDeleting}
                         >
                             <Trash2 className="w-3.5 h-3.5" />
-                            {showConfirm && <span className="ml-1">Confirm?</span>}
+                            {showConfirm && <span className="ml-1 text-[11px]">Confirm?</span>}
                         </Button>
                         <Link href={`/chat/${id}`}>
-                            <Button size="sm" className="h-8 text-xs px-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium shadow-sm">
+                            <Button size="sm" className="h-7.5 px-3 text-xs font-medium">
                                 <MessageSquare className="w-3.5 h-3.5 mr-1" />
                                 Chat
                             </Button>
                         </Link>
                     </div>
                 </div>
-            </CardContent>
+            </div>
         </Card>
     );
 }

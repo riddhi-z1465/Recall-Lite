@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Loader2, Link2, CheckCircle2, AlertCircle, Sparkles, Globe, Bot, Atom, Zap } from 'lucide-react';
+import { Plus, Loader2, Link2, CheckCircle2, AlertCircle, Globe, BookOpen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const SAMPLE_LINKS = [
-    { label: 'Wikipedia AI', icon: Bot, url: 'https://en.wikipedia.org/wiki/Artificial_intelligence' },
-    { label: 'React Docs', icon: Atom, url: 'https://react.dev/learn' },
-    { label: 'Next.js Features', icon: Zap, url: 'https://nextjs.org/docs/app/building-your-application' },
+    { label: 'React 19 Docs', url: 'https://react.dev/learn' },
+    { label: 'Next.js App Router', url: 'https://nextjs.org/docs/app/building-your-application' },
+    { label: 'MDN Web APIs', url: 'https://developer.mozilla.org/en-US/docs/Web/API' },
 ];
 
 export function AddLinkForm() {
@@ -31,7 +31,7 @@ export function AddLinkForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!url) return;
+        if (!url.trim()) return;
 
         setLoading(true);
         setMessage(null);
@@ -40,18 +40,18 @@ export function AddLinkForm() {
             const res = await fetch('/api/add-url', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url }),
+                body: JSON.stringify({ url: url.trim() }),
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.error || 'Failed to scrape and save link.');
+                throw new Error(data.error || 'Failed to extract and save link.');
             }
 
             setUrl('');
             router.refresh();
-            setMessage({ type: 'success', text: 'Article scraped and added to your second brain!' });
+            setMessage({ type: 'success', text: 'Article scraped and indexed. Ready for search & chat.' });
             setTimeout(() => setMessage(null), 4000);
         } catch (error: any) {
             setMessage({ type: 'error', text: error.message || 'Error processing link.' });
@@ -61,27 +61,28 @@ export function AddLinkForm() {
     };
 
     return (
-        <div className="w-full max-w-3xl mx-auto space-y-3">
-            <div className="p-4 md:p-6 rounded-2xl border border-indigo-500/20 bg-card/80 dark:bg-card/60 backdrop-blur-xl shadow-xl hover:shadow-indigo-500/5 transition-all duration-300 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/10 to-pink-500/10 rounded-full blur-2xl pointer-events-none" />
-
-                <div className="flex items-center gap-2 mb-3">
-                    <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
-                        <Link2 className="w-4 h-4" />
+        <div className="w-full space-y-2.5">
+            <div className="p-4 rounded-lg border border-border bg-card shadow-xs">
+                <div className="flex items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2">
+                        <Link2 className="w-4 h-4 text-primary" />
+                        <h2 className="text-xs font-semibold uppercase tracking-wider text-foreground">
+                            Save Web Page
+                        </h2>
                     </div>
-                    <h2 className="text-sm font-semibold tracking-wide">Save New Web Article</h2>
-                    <span className="text-xs text-muted-foreground ml-auto hidden sm:inline-block">Auto-scrapes text & creates vector embeddings</span>
+                    <span className="text-[11px] text-muted-foreground hidden sm:inline-block">
+                        Auto-extracts article content & creates vector embeddings
+                    </span>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2.5">
+                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
                     <div className="relative flex-1">
                         {detectedDomain ? (
                             <img
                                 src={`https://www.google.com/s2/favicons?domain=${detectedDomain}&sz=32`}
                                 alt={detectedDomain}
-                                className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 rounded"
+                                className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 rounded-xs"
                                 onError={(e) => {
-                                    // Fallback to Globe icon on image error
                                     (e.target as HTMLElement).style.display = 'none';
                                 }}
                             />
@@ -90,61 +91,57 @@ export function AddLinkForm() {
                         )}
                         <Input
                             type="url"
-                            placeholder="Paste article URL (e.g. https://example.com/article)..."
+                            placeholder="https://example.com/article-or-documentation"
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                             required
-                            className="pl-9 h-11 bg-background/60 focus:bg-background border-border/60 focus:border-indigo-500/50 transition-all text-sm"
+                            className="pl-9 h-9.5 text-sm bg-background border-border"
                         />
                     </div>
                     <Button
                         type="submit"
                         disabled={loading || !url.trim()}
-                        className="h-11 px-6 font-semibold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 shrink-0"
+                        className="h-9.5 px-4 text-xs font-medium shrink-0"
                     >
                         {loading ? (
                             <>
-                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                                Processing...
+                                <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                                Scraping & Indexing...
                             </>
                         ) : (
                             <>
-                                <Plus className="w-4 h-4 mr-2" />
-                                Add Link
+                                <Plus className="w-3.5 h-3.5 mr-1" />
+                                Add Article
                             </>
                         )}
                     </Button>
                 </form>
 
-                {/* Sample Link Quick Chips */}
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-                    <span className="text-muted-foreground font-medium flex items-center gap-1">
-                        <Sparkles className="w-3 h-3 text-amber-500" /> Try example:
+                {/* Sample quick links */}
+                <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-xs">
+                    <span className="text-[11px] text-muted-foreground flex items-center gap-1 mr-1">
+                        <BookOpen className="w-3 h-3" /> Try example:
                     </span>
-                    {SAMPLE_LINKS.map((sample) => {
-                        const Icon = sample.icon;
-                        return (
-                            <button
-                                key={sample.url}
-                                type="button"
-                                onClick={() => setUrl(sample.url)}
-                                className="px-2.5 py-1 rounded-full bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/40 transition-colors flex items-center gap-1.5"
-                            >
-                                <Icon className="w-3.5 h-3.5" />
-                                {sample.label}
-                            </button>
-                        );
-                    })}
+                    {SAMPLE_LINKS.map((sample) => (
+                        <button
+                            key={sample.url}
+                            type="button"
+                            onClick={() => setUrl(sample.url)}
+                            className="px-2 py-0.5 rounded text-[11px] font-mono bg-muted hover:bg-accent text-muted-foreground hover:text-foreground border border-border/80 transition-colors"
+                        >
+                            {sample.label}
+                        </button>
+                    ))}
                 </div>
 
-                {/* Toast Status Message */}
+                {/* Status Message */}
                 {message && (
-                    <div className={`mt-3 p-3 rounded-lg flex items-center gap-2 text-xs font-medium animate-in fade-in slide-in-from-top-1 duration-200 ${message.type === 'success'
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                    <div className={`mt-2.5 p-2.5 rounded-md flex items-center gap-2 text-xs font-medium ${message.type === 'success'
+                            ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20'
                             : 'bg-destructive/10 text-destructive border border-destructive/20'
                         }`}>
                         {message.type === 'success' ? (
-                            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
                         ) : (
                             <AlertCircle className="w-4 h-4 shrink-0" />
                         )}

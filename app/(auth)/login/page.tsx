@@ -5,9 +5,9 @@ import { auth } from '@/lib/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
-import { Brain, Sparkles, Eye, EyeOff, ArrowRight, CheckCircle2, AlertCircle, Loader2, Lock, Mail, Zap, MessageSquare, ShieldCheck } from 'lucide-react';
+import { Bookmark, Eye, EyeOff, ArrowRight, CheckCircle2, AlertCircle, Loader2, Lock, Mail, FileText, Search, ShieldCheck } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function LoginPage() {
@@ -28,7 +28,7 @@ export default function LoginPage() {
     const handleAuthSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email || !password) {
-            setMessage({ type: 'error', text: 'Please fill in all fields.' });
+            setMessage({ type: 'error', text: 'Please enter your email and password.' });
             return;
         }
 
@@ -47,7 +47,7 @@ export default function LoginPage() {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 if (userCredential.user) {
                     await setSessionCookie(userCredential.user);
-                    setMessage({ type: 'success', text: 'Account created successfully! Redirecting...' });
+                    setMessage({ type: 'success', text: 'Account created. Opening your dashboard...' });
                     router.push('/dashboard');
                     router.refresh();
                 }
@@ -55,53 +55,50 @@ export default function LoginPage() {
         } catch (err: any) {
             console.error('Firebase Auth error:', err);
             const errorMessage = err?.code === 'auth/invalid-credential'
-                ? 'Invalid email or password.'
+                ? 'Incorrect email or password.'
                 : err?.code === 'auth/email-already-in-use'
                     ? 'An account with this email already exists.'
-                    : err?.message || 'Authentication failed. Please try again.';
+                    : err?.code === 'auth/weak-password'
+                        ? 'Password should be at least 6 characters.'
+                        : err?.message || 'Authentication failed. Please try again.';
             setMessage({ type: 'error', text: errorMessage });
             setLoading(false);
         }
     };
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center bg-background p-4 overflow-hidden selection:bg-indigo-500/20">
-            {/* Top Right Theme Toggle */}
-            <div className="absolute top-4 right-4 z-20">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 sm:p-6">
+            {/* Top Right Controls */}
+            <div className="absolute top-4 right-4 z-10">
                 <ThemeToggle />
             </div>
 
-            {/* Glowing Ambient Background Elements */}
-            <div className="absolute top-1/4 -left-32 w-96 h-96 bg-indigo-500/15 dark:bg-indigo-500/25 rounded-full blur-3xl pointer-events-none animate-pulse" />
-            <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-purple-500/15 dark:bg-purple-500/25 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '1s' }} />
-
-            <div className="w-full max-w-md z-10 space-y-6">
-                {/* Brand Header */}
-                <div className="text-center space-y-3">
-                    <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-pink-500/20 border border-indigo-500/20 shadow-lg backdrop-blur-md">
-                        <div className="relative">
-                            <Brain className="w-9 h-9 text-indigo-600 dark:text-indigo-400" />
-                            <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-pink-500 animate-spin" style={{ animationDuration: '6s' }} />
-                        </div>
+            <div className="w-full max-w-sm space-y-6">
+                {/* Header */}
+                <div className="text-center space-y-2">
+                    <div className="inline-flex items-center justify-center p-2.5 rounded-lg border border-border bg-card shadow-xs">
+                        <Bookmark className="w-5 h-5 text-primary" />
                     </div>
-                    <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
-                        Recall Lite
-                    </h1>
-                    <p className="text-sm text-muted-foreground max-w-xs mx-auto">
-                        Your intelligent second brain. Save web articles, extract insights, and chat with your knowledge base.
-                    </p>
+                    <div>
+                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                            Recall Lite
+                        </h1>
+                        <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto leading-relaxed">
+                            Personal reading archive with local vector search and document chat.
+                        </p>
+                    </div>
                 </div>
 
-                {/* Main Auth Card */}
-                <Card className="border-border/60 shadow-xl backdrop-blur-xl bg-card/80 dark:bg-card/60 transition-all duration-300">
-                    <CardHeader className="pb-4">
+                {/* Auth Card */}
+                <Card className="border-border bg-card shadow-xs">
+                    <div className="p-4 border-b border-border">
                         {/* Tab Switcher */}
-                        <div className="grid grid-cols-2 p-1 bg-muted/60 rounded-lg text-sm font-medium">
+                        <div className="grid grid-cols-2 p-1 bg-muted rounded-md text-xs font-medium">
                             <button
                                 type="button"
                                 onClick={() => { setMode('signin'); setMessage(null); }}
-                                className={`py-2 rounded-md transition-all duration-200 ${mode === 'signin'
-                                        ? 'bg-background text-foreground shadow-sm font-semibold'
+                                className={`py-1.5 rounded transition-all ${mode === 'signin'
+                                        ? 'bg-background text-foreground shadow-xs font-semibold'
                                         : 'text-muted-foreground hover:text-foreground'
                                     }`}
                             >
@@ -110,37 +107,37 @@ export default function LoginPage() {
                             <button
                                 type="button"
                                 onClick={() => { setMode('signup'); setMessage(null); }}
-                                className={`py-2 rounded-md transition-all duration-200 ${mode === 'signup'
-                                        ? 'bg-background text-foreground shadow-sm font-semibold'
+                                className={`py-1.5 rounded transition-all ${mode === 'signup'
+                                        ? 'bg-background text-foreground shadow-xs font-semibold'
                                         : 'text-muted-foreground hover:text-foreground'
                                     }`}
                             >
                                 Create Account
                             </button>
                         </div>
-                    </CardHeader>
+                    </div>
 
-                    <CardContent className="space-y-4 pt-0">
-                        <form onSubmit={handleAuthSubmit} className="space-y-4">
-                            {/* Email Input */}
+                    <CardContent className="p-5 space-y-4">
+                        <form onSubmit={handleAuthSubmit} className="space-y-3.5">
+                            {/* Email */}
                             <div className="space-y-1.5">
-                                <label className="text-xs font-medium text-muted-foreground">Email Address</label>
+                                <label className="text-xs font-medium text-foreground">Email</label>
                                 <div className="relative">
                                     <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                                     <Input
                                         type="email"
-                                        placeholder="name@example.com"
+                                        placeholder="name@domain.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
-                                        className="pl-9 h-11 bg-background/50 focus:bg-background transition-colors"
+                                        className="pl-9 h-9.5 text-sm bg-background border-border"
                                     />
                                 </div>
                             </div>
 
-                            {/* Password Input */}
+                            {/* Password */}
                             <div className="space-y-1.5">
-                                <label className="text-xs font-medium text-muted-foreground">Password</label>
+                                <label className="text-xs font-medium text-foreground">Password</label>
                                 <div className="relative">
                                     <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                                     <Input
@@ -149,23 +146,24 @@ export default function LoginPage() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
-                                        className="pl-9 pr-10 h-11 bg-background/50 focus:bg-background transition-colors"
+                                        className="pl-9 pr-9 h-9.5 text-sm bg-background border-border font-mono"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
+                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
+                                        tabIndex={-1}
                                     >
-                                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Alert Message */}
+                            {/* Feedback message */}
                             {message && (
-                                <div className={`p-3 rounded-lg flex items-start gap-2.5 text-xs ${message.type === 'error'
+                                <div className={`p-2.5 rounded-md flex items-start gap-2 text-xs ${message.type === 'error'
                                         ? 'bg-destructive/10 text-destructive border border-destructive/20'
-                                        : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                        : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20'
                                     }`}>
                                     {message.type === 'error' ? (
                                         <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -180,7 +178,7 @@ export default function LoginPage() {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full h-11 font-semibold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white shadow-lg hover:shadow-indigo-500/25 transition-all duration-300"
+                                className="w-full h-9.5 text-sm font-medium mt-1"
                             >
                                 {loading ? (
                                     <>
@@ -190,31 +188,25 @@ export default function LoginPage() {
                                 ) : (
                                     <>
                                         {mode === 'signin' ? 'Sign In' : 'Create Account'}
-                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                        <ArrowRight className="w-4 h-4 ml-1.5" />
                                     </>
                                 )}
                             </Button>
                         </form>
 
-                        {/* Feature Badges */}
-                        <div className="pt-4 border-t border-border/50 grid grid-cols-3 gap-2 text-center text-[11px] text-muted-foreground">
-                            <div className="p-2 rounded-lg bg-muted/40 flex flex-col items-center gap-1">
-                                <span className="flex items-center gap-1 font-semibold text-indigo-600 dark:text-indigo-400">
-                                    <Zap className="w-3.5 h-3.5" /> Scraping
-                                </span>
-                                <span>Save links</span>
+                        {/* Practical feature notes */}
+                        <div className="pt-3 border-t border-border/80 space-y-2 text-[11px] text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                                <FileText className="w-3.5 h-3.5 text-primary shrink-0" />
+                                <span>Cleans articles, strips ads & boilerplate</span>
                             </div>
-                            <div className="p-2 rounded-lg bg-muted/40 flex flex-col items-center gap-1">
-                                <span className="flex items-center gap-1 font-semibold text-purple-600 dark:text-purple-400">
-                                    <MessageSquare className="w-3.5 h-3.5" /> AI Vector
-                                </span>
-                                <span>RAG Chat</span>
+                            <div className="flex items-center gap-2">
+                                <Search className="w-3.5 h-3.5 text-primary shrink-0" />
+                                <span>Vector search & answers strictly from source text</span>
                             </div>
-                            <div className="p-2 rounded-lg bg-muted/40 flex flex-col items-center gap-1">
-                                <span className="flex items-center gap-1 font-semibold text-pink-600 dark:text-pink-400">
-                                    <ShieldCheck className="w-3.5 h-3.5" /> Secure
-                                </span>
-                                <span>Private Data</span>
+                            <div className="flex items-center gap-2">
+                                <ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" />
+                                <span>User-isolated storage in Firebase Firestore</span>
                             </div>
                         </div>
                     </CardContent>

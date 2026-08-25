@@ -3,8 +3,6 @@ import { redirect } from 'next/navigation';
 import { ChatInterface } from '@/components/chat-interface';
 import { AppSidebar } from '@/components/app-sidebar';
 import { ResizableLayout } from '@/components/resizable-layout';
-import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
 
 interface ChatPageProps {
     params: Promise<{

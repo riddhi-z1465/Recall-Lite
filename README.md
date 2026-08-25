@@ -1,30 +1,24 @@
-# Recall Lite 🧠
+# Recall Lite
 
-A premium, state-of-the-art "Second Brain" web application that enables users to save URLs, automatically scrape and process web page content, and interact with their personalized knowledge base through AI-powered RAG chat. Built with **Next.js 16**, **Firebase (Auth & Firestore)**, **Tailwind CSS 4**, and **Vercel AI SDK**.
+A fast, developer-crafted personal reading archive and document query tool. Save URLs, automatically clean and extract web text, index chunks with vector embeddings, and query your knowledge base using strict context retrieval. Built with **Next.js 16**, **Firebase**, **Tailwind CSS 4**, and **Google Gemini**.
 
 ---
 
-## ✨ Features
+## Features
 
 ### Core Functionality
-- **📎 URL Scraping & Vector Indexing**: Automatic web scraping, content cleaning, chunking, and embedding generation for saved articles and web pages.
-- **💬 RAG AI Chat Interface**: RAG (Retrieval-Augmented Generation) conversational AI that answers questions strictly based on your saved knowledge base with source links.
-- **⚡ Real-time Response Streaming**: Live AI response streaming powered by Groq & Vercel AI SDK.
-- **👤 Firebase Authentication**: Secure email/password authentication & session management powered by Firebase Auth.
-- **🔒 Isolated Knowledge Storage**: User-scoped document storage in Firebase Firestore ensuring absolute privacy.
+- **URL Extraction & Chunking**: Automatic web scraping with Cheerio, removing boilerplate and advertising to extract clean readable content with LangChain text splitters.
+- **Strict RAG Querying**: Context-grounded conversation powered by Google Gemini 2.5 Flash that answers strictly from your saved sources.
+- **Live Response Streaming**: Instant streamed answers with Markdown and syntax-highlighted code blocks.
+- **Firebase Authentication**: Email/password authentication and user-isolated Firestore document storage.
 
-### User Interface & Experience
-- **🎨 Glassmorphic Aesthetic & Design System**: Modern translucent cards, ambient glowing mesh backgrounds, custom scrollbars, and smooth micro-interactions.
-- **🌙 Dark / Light Mode Support**: Seamless theme switching (Light, Dark, System) powered by `next-themes`.
-- **📊 Knowledge Statistics**: Real-time stats banner displaying total saved items, estimated total read time, and total source domains.
-- **🔍 Real-time Search & Filtering**: Live search filtering by title, URL, or excerpt with multiple sorting options (*Newest*, *Oldest*, *Title*).
-- **🎛 Grid vs. Compact List Views**: Instant layout toggle between Grid View cards and Compact List View rows.
-- **📝 Formatted Markdown AI Chat**: Rich AI response formatting featuring bold, bulleted/numbered lists, blockquotes, tables, and syntax-highlighted code blocks with a 1-click **Copy Code** button.
-- **💡 Starter Prompt Chips**: 1-click starter question chips (*⚡ 3-Point Summary*, *💡 Main Takeaways*, *❓ Key Q&As*, *📝 Action Items*) when starting a document chat.
-- **🏷 Auto Domain Favicons & Read Time Badges**: Automatic website favicon badges and read-time estimation tags per document.
-- **📱 Fully Responsive**: Modern glassmorphic sidebar and drawer menu built for desktop, tablet, and mobile screens.
-
----
+### Interface & Ergonomics
+- **Restrained Design System**: Clean neutral slate/zinc palette, crisp micro-borders, and high-contrast typography without neon gradients or glow clutter.
+- **Keyboard Shortcuts**: Press `/` anywhere in the dashboard to jump straight into search.
+- **Domain & Tag Filtering**: Quick-filter your library by domain sources (e.g., `react.dev`, `developer.mozilla.org`).
+- **Layout Modes**: Instant toggle between Grid Cards and Compact List rows.
+- **Reading Time & Word Stats**: Automatic read-time estimations and domain favicon detection.
+- **Dark / Light Mode**: High-contrast theme switching with system preference detection.
 
 ## 🛠 Tech Stack
 
